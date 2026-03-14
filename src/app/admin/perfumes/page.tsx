@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
+import { perfumes as staticPerfumes } from "@/data/perfumes";
 
 export default function AdminPerfumesPage() {
     const { token } = useAuth();
@@ -27,13 +28,11 @@ export default function AdminPerfumesPage() {
 
     const fetchPerfumes = async () => {
         try {
-            const res = await fetch("http://localhost:5000/api/products");
-            if (res.ok) {
-                const data = await res.json();
-                setPerfumes(data);
-            }
+            await new Promise(resolve => setTimeout(resolve, 300));
+            const custom = JSON.parse(localStorage.getItem("perfume_custom_products") || "[]");
+            setPerfumes([...custom, ...staticPerfumes]);
         } catch (error) {
-            console.error("Failed to fetch perfumes", error);
+            console.error("Failed to load perfumes", error);
         } finally {
             setLoading(false);
         }
@@ -44,13 +43,13 @@ export default function AdminPerfumesPage() {
     }, []);
 
     const handleEdit = (perfume: any) => {
-        setEditingId(perfume._id);
+        setEditingId(perfume._id || perfume.id);
         const topNotes = perfume.scentPyramid?.top?.map((n: any) => n.name).join(", ") || "";
         setFormData({
             name: perfume.name,
             brand: perfume.brand,
             price: perfume.price.toString(),
-            collectionName: perfume.collectionName || "",
+            collectionName: perfume.collectionName || perfume.collection || "",
             longevity: perfume.longevity || "",
             gender: perfume.gender || "Unisex",
             description: perfume.description,
@@ -62,25 +61,21 @@ export default function AdminPerfumesPage() {
 
     const handleDelete = async (id: string) => {
         if (!confirm("Are you sure you want to delete this perfume?")) return;
-        if (!token) return;
+        if (staticPerfumes.find((p: any) => p.id === id || p._id === id)) {
+            alert("Cannot delete static preset perfumes.");
+            return;
+        }
         try {
-            const res = await fetch(`http://localhost:5000/api/products/${id}`, {
-                method: "DELETE",
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            if (res.ok) {
-                fetchPerfumes();
-            } else {
-                alert("Failed to delete product");
-            }
+            const custom = JSON.parse(localStorage.getItem("perfume_custom_products") || "[]");
+            const updated = custom.filter((p: any) => p._id !== id && p.id !== id);
+            localStorage.setItem("perfume_custom_products", JSON.stringify(updated));
+            fetchPerfumes();
         } catch (error) {
             console.error(error);
         }
     };
 
     const handleSubmit = async () => {
-        if (!token) return;
-
         const topNotes = formData.notes.split(",").filter(n => n.trim() !== "").map(n => ({
             name: n.trim(),
             intensity: 7
@@ -88,6 +83,8 @@ export default function AdminPerfumesPage() {
 
         const payload = {
             ...formData,
+            _id: editingId || Math.random().toString(36).substring(2, 10),
+            id: editingId || Math.random().toString(36).substring(2, 10),
             price: Number(formData.price),
             year: new Date().getFullYear(),
             story: formData.description,
@@ -96,28 +93,25 @@ export default function AdminPerfumesPage() {
         };
 
         try {
-            const url = editingId
-                ? `http://localhost:5000/api/products/${editingId}`
-                : "http://localhost:5000/api/products";
-            const method = editingId ? "PUT" : "POST";
-
-            const res = await fetch(url, {
-                method,
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`
-                },
-                body: JSON.stringify(payload)
-            });
-
-            if (res.ok) {
-                setShowForm(false);
-                setEditingId(null);
-                setFormData({ name: "", brand: "", price: "", collectionName: "", longevity: "", gender: "Unisex", description: "", notes: "", image: "" });
-                fetchPerfumes();
+            const custom = JSON.parse(localStorage.getItem("perfume_custom_products") || "[]");
+            if (editingId) {
+                if (staticPerfumes.find((p: any) => p.id === editingId || p._id === editingId)) {
+                    alert("Cannot edit static preset perfumes.");
+                    return;
+                }
+                const index = custom.findIndex((p: any) => p._id === editingId || p.id === editingId);
+                if (index > -1) {
+                    custom[index] = payload;
+                }
             } else {
-                alert("Failed to save product");
+                custom.push(payload);
             }
+            localStorage.setItem("perfume_custom_products", JSON.stringify(custom));
+
+            setShowForm(false);
+            setEditingId(null);
+            setFormData({ name: "", brand: "", price: "", collectionName: "", longevity: "", gender: "Unisex", description: "", notes: "", image: "" });
+            fetchPerfumes();
         } catch (error) {
             console.error(error);
         }

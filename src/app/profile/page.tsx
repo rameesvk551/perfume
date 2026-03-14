@@ -14,13 +14,17 @@ export default function ProfilePage() {
         const fetchMyOrders = async () => {
             if (!token) return;
             try {
-                const res = await fetch("http://localhost:5000/api/orders/myorders", {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-                if (res.ok) {
-                    const data = await res.json();
-                    setOrders(data);
-                }
+                await new Promise((resolve) => setTimeout(resolve, 300));
+                const allOrders = JSON.parse(
+                    localStorage.getItem("perfume_orders") || "[]"
+                );
+                const userId = token.replace("mock_token_", "");
+                const myOrders = allOrders.filter(
+                    (o: any) => o.userId === userId || o.userEmail === user?.email
+                );
+                // Sort by descending createdAt
+                myOrders.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+                setOrders(myOrders);
             } catch (error) {
                 console.error("Failed to fetch user orders", error);
             } finally {
@@ -29,7 +33,7 @@ export default function ProfilePage() {
         };
 
         fetchMyOrders();
-    }, [token]);
+    }, [token, user]);
 
     if (!user) {
         return (

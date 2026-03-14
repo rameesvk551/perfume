@@ -25,6 +25,8 @@ const fragranceCategories = [
     "Vanilla",
 ];
 
+import { perfumes as localPerfumes } from "@/data/perfumes";
+
 export default function CollectionsPage() {
     const [perfumes, setPerfumes] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
@@ -39,13 +41,11 @@ export default function CollectionsPage() {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const res = await fetch("http://localhost:5000/api/products");
-                const data = await res.json();
-                // Next.js uses 'id' but Mongo provides '_id', let's map it
-                const formattedData = data.map((p: any) => ({ ...p, id: p._id }));
-                setPerfumes(formattedData);
+                // Simulate network request
+                await new Promise(resolve => setTimeout(resolve, 300));
+                setPerfumes(localPerfumes);
             } catch (error) {
-                console.error("Failed to fetch products", error);
+                console.error("Failed to load products", error);
             } finally {
                 setLoading(false);
             }

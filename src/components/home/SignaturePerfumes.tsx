@@ -5,6 +5,8 @@ import { ScrollReveal } from "@/components/ScrollReveal";
 import Link from "next/link";
 import Image from "next/image";
 
+import { perfumes } from "@/data/perfumes";
+
 export function SignaturePerfumes() {
     const [featured, setFeatured] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
@@ -12,10 +14,9 @@ export function SignaturePerfumes() {
     useEffect(() => {
         const fetchPerfumes = async () => {
             try {
-                const res = await fetch("http://localhost:5000/api/products");
-                const data = await res.json();
-                const formatted = data.map((p: any) => ({ ...p, id: p._id }));
-                setFeatured(formatted.filter((p: any) => p.rating >= 4.8).slice(0, 4));
+                // Simulate network request
+                await new Promise(resolve => setTimeout(resolve, 500));
+                setFeatured(perfumes.filter((p: any) => p.rating >= 4.8).slice(0, 4));
             } catch (error) {
                 console.error("Failed to fetch featured", error);
             } finally {

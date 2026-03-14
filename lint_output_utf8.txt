@@ -1,0 +1,106 @@
+﻿
+C:\Users\ACER\www\perfume\src\app\admin\customers\page.tsx
+  9:40  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\ACER\www\perfume\src\app\admin\orders\page.tsx
+  25:42  error    Unexpected any. Specify a different type                                                                        @typescript-eslint/no-explicit-any
+  34:27  error    Unexpected any. Specify a different type                                                                        @typescript-eslint/no-explicit-any
+  34:35  error    Unexpected any. Specify a different type                                                                        @typescript-eslint/no-explicit-any
+  45:8   warning  React Hook useEffect has a missing dependency: 'fetchOrders'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  52:56  error    Unexpected any. Specify a different type                                                                        @typescript-eslint/no-explicit-any
+
+C:\Users\ACER\www\perfume\src\app\admin\page.tsx
+  245:30  warning  'i' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\ACER\www\perfume\src\app\admin\perfumes\page.tsx
+   10:13  warning  'token' is assigned a value but never used  @typescript-eslint/no-unused-vars
+   11:46  error    Unexpected any. Specify a different type    @typescript-eslint/no-explicit-any
+   45:34  error    Unexpected any. Specify a different type    @typescript-eslint/no-explicit-any
+   47:61  error    Unexpected any. Specify a different type    @typescript-eslint/no-explicit-any
+   64:37  error    Unexpected any. Specify a different type    @typescript-eslint/no-explicit-any
+   70:47  error    Unexpected any. Specify a different type    @typescript-eslint/no-explicit-any
+   98:45  error    Unexpected any. Specify a different type    @typescript-eslint/no-explicit-any
+  102:52  error    Unexpected any. Specify a different type    @typescript-eslint/no-explicit-any
+
+C:\Users\ACER\www\perfume\src\app\checkout\page.tsx
+   12:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  103:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\ACER\www\perfume\src\app\collections\page.tsx
+   31:46  error    Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+   76:8   warning  React Hook useMemo has a missing dependency: 'perfumes'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  219:26  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                            react/no-unescaped-entities
+  240:55  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                            react/no-unescaped-entities
+  384:50  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                            react/no-unescaped-entities
+
+C:\Users\ACER\www\perfume\src\app\perfume\[id]\page.tsx
+   9:10  warning  'notFound' is defined but never used      @typescript-eslint/no-unused-vars
+  21:44  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  22:60  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  31:63  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  39:33  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  41:29  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\ACER\www\perfume\src\app\profile\page.tsx
+   10:42  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+   23:25  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+   26:35  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+   26:43  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  107:87  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+  129:82  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  133:69  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+C:\Users\ACER\www\perfume\src\components\auth\AuthModal.tsx
+  28:17  error    'users' is never reassigned. Use 'const' instead  prefer-const
+  31:36  error    Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+  49:25  error    Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+  58:18  warning  'err' is defined but never used                   @typescript-eslint/no-unused-vars
+
+C:\Users\ACER\www\perfume\src\components\home\SignaturePerfumes.tsx
+  11:46  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  19:49  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\ACER\www\perfume\src\components\product\RelatedPerfumes.tsx
+  4:10  warning  'motion' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\ACER\www\perfume\src\context\AuthContext.tsx
+  41:17  error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\ACER\www\perfume\src\context\AuthContext.tsx:41:17
+  39 |         if (storedToken && storedUser) {
+  40 |             try {
+> 41 |                 setToken(storedToken);
+     |                 ^^^^^^^^ Avoid calling setState() directly within an effect
+  42 |                 setUser(JSON.parse(storedUser));
+  43 |             } catch (e) {
+  44 |                 localStorage.removeItem("token");  react-hooks/set-state-in-effect
+  43:22  warning  'e' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               @typescript-eslint/no-unused-vars
+
+C:\Users\ACER\www\perfume\src\context\CartContext.tsx
+   4:10  warning  'useAuth' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   @typescript-eslint/no-unused-vars
+  52:24  error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\ACER\www\perfume\src\context\CartContext.tsx:52:24
+  50 |         if (typeof window !== "undefined") {
+  51 |             const saved = localStorage.getItem("perfume_cart");
+> 52 |             if (saved) setItems(JSON.parse(saved));
+     |                        ^^^^^^^^ Avoid calling setState() directly within an effect
+  53 |         }
+  54 |         setLoading(false);
+  55 |     }, []);  react-hooks/set-state-in-effect
+
+Γ£û 46 problems (36 errors, 10 warnings)
+  1 error and 0 warnings potentially fixable with the `--fix` option.
+

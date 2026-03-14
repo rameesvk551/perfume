@@ -13,13 +13,9 @@ export default function AdminCustomersPage() {
         const fetchUsers = async () => {
             if (!token) return;
             try {
-                const res = await fetch("http://localhost:5000/api/users", {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-                if (res.ok) {
-                    const data = await res.json();
-                    setUsers(data);
-                }
+                await new Promise((resolve) => setTimeout(resolve, 300));
+                const data = JSON.parse(localStorage.getItem("perfume_users") || "[]");
+                setUsers(data);
             } catch (error) {
                 console.error("Failed to fetch users", error);
             } finally {

@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { useAuth } from "./AuthContext";
+import { perfumes } from "@/data/perfumes";
 
 export interface CartItem {
     product: {
@@ -40,98 +41,68 @@ const CartContext = createContext<CartContextType>({
 });
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-    const { token, user } = useAuth();
+    // const { token, user } = useAuth();
     const [items, setItems] = useState<CartItem[]>([]);
     const [loading, setLoading] = useState(true);
     const [isCartOpen, setIsCartOpen] = useState(false);
 
     useEffect(() => {
-        if (token) {
-            fetchCart();
-        } else {
-            setItems([]);
-            setLoading(false);
+        if (typeof window !== "undefined") {
+            const saved = localStorage.getItem("perfume_cart");
+            if (saved) setItems(JSON.parse(saved));
         }
-    }, [token]);
+        setLoading(false);
+    }, []);
 
-    const fetchCart = async () => {
-        try {
-            const res = await fetch("http://localhost:5000/api/cart", {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-            if (res.ok) {
-                const data = await res.json();
-                setItems(data.items || []);
-            }
-        } catch (error) {
-            console.error("Failed to fetch cart", error);
-        } finally {
-            setLoading(false);
+    useEffect(() => {
+        if (!loading && typeof window !== "undefined") {
+            localStorage.setItem("perfume_cart", JSON.stringify(items));
         }
-    };
+    }, [items, loading]);
 
     const addToCart = async (productId: string, quantity: number) => {
-        if (!token) {
-            alert("Please login to add items to your cart.");
-            return;
-        }
-        try {
-            const res = await fetch("http://localhost:5000/api/cart/add", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({ productId, quantity }),
-            });
-            if (res.ok) {
-                const data = await res.json();
-                setItems(data.items);
-                setIsCartOpen(true);
+        const product = perfumes.find((p) => p.id === productId);
+        if (!product) return;
+
+        setItems((prevItems) => {
+            const existingItem = prevItems.find((item) => item.product._id === productId);
+            if (existingItem) {
+                return prevItems.map((item) =>
+                    item.product._id === productId
+                        ? { ...item, quantity: item.quantity + quantity }
+                        : item
+                );
             }
-        } catch (error) {
-            console.error("Failed to add to cart", error);
-        }
+            return [
+                ...prevItems,
+                {
+                    _id: Math.random().toString(36).substr(2, 9),
+                    product: {
+                        _id: product.id,
+                        name: product.name,
+                        price: product.price,
+                        image: product.image,
+                        brand: product.brand,
+                    },
+                    quantity,
+                },
+            ];
+        });
+        setIsCartOpen(true);
     };
 
     const updateQuantity = async (productId: string, quantity: number) => {
-        if (!token) return;
-        try {
-            const res = await fetch("http://localhost:5000/api/cart/update", {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({ productId, quantity }),
-            });
-            if (res.ok) {
-                const data = await res.json();
-                setItems(data.items);
-            }
-        } catch (error) {
-            console.error("Failed to update cart", error);
-        }
+        setItems((prevItems) =>
+            prevItems.map((item) =>
+                item.product._id === productId ? { ...item, quantity } : item
+            )
+        );
     };
 
     const removeFromCart = async (productId: string) => {
-        if (!token) return;
-        try {
-            const res = await fetch(`http://localhost:5000/api/cart/remove/${productId}`, {
-                method: "DELETE",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-            if (res.ok) {
-                const data = await res.json();
-                setItems(data.items);
-            }
-        } catch (error) {
-            console.error("Failed to remove from cart", error);
-        }
+        setItems((prevItems) =>
+            prevItems.filter((item) => item.product._id !== productId)
+        );
     };
 
     const cartCount = items.reduce((acc, item) => acc + item.quantity, 0);

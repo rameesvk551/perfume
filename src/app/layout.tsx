@@ -1,5 +1,6 @@
 import { AuthProvider } from "@/context/AuthContext";
 import { CartProvider } from "@/context/CartContext";
+import { DataSeeder } from "@/components/DataSeeder";
 import type { Metadata } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
@@ -40,6 +41,7 @@ export default function RootLayout({
       <body className="antialiased">
         <AuthProvider>
           <CartProvider>
+            <DataSeeder />
             {children}
           </CartProvider>
         </AuthProvider>

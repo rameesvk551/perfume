@@ -27,13 +27,7 @@ export default function CheckoutPage() {
     const [placingOrder, setPlacingOrder] = useState(false);
 
     useEffect(() => {
-        const loadRazorpay = () => {
-            const script = document.createElement("script");
-            script.src = "https://checkout.razorpay.com/v1/checkout.js";
-            script.async = true;
-            document.body.appendChild(script);
-        };
-        loadRazorpay();
+        // Mock Razorpay load removed
     }, []);
 
     if (authLoading || cartLoading) {
@@ -70,99 +64,45 @@ export default function CheckoutPage() {
         );
     }
 
-    const loadRazorpayKey = async () => {
-        const res = await fetch("http://localhost:5000/api/config/razorpay");
-        const key = await res.text();
-        return key;
-    };
-
     const handlePlaceOrder = async (e: React.FormEvent) => {
         e.preventDefault();
         setPlacingOrder(true);
 
         try {
-            // 1. Place order on backend
-            const res = await fetch("http://localhost:5000/api/orders", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`
-                },
-                body: JSON.stringify({
-                    orderItems: items.map(i => ({ product: i.product._id, name: i.product.name, qty: i.quantity, price: i.product.price, image: i.product.image })),
-                    shippingAddress: address,
-                    paymentMethod: "Razorpay",
-                    itemsPrice: cartTotal,
-                    taxPrice: 0,
-                    shippingPrice: 0,
-                    totalPrice: cartTotal
-                })
-            });
-            const data = await res.json();
+            // Simulate processing
+            await new Promise(resolve => setTimeout(resolve, 1500));
 
-            if (!res.ok) {
-                throw new Error(data.message || "Failed to create order");
-            }
-
-            const orderId = data.order._id;
-            const razorpayOrderId = data.razorpayOrder.id;
-            const amount = data.razorpayOrder.amount;
-
-            // 2. Load key & trigger Razorpay checkout
-            const key = await loadRazorpayKey();
-
-            const options = {
-                key,
-                amount: amount, // amount is already in smallest currency unit from backend
-                currency: "INR",
-                name: "Maison Lumière",
-                description: "Luxury Perfumery Order",
-                order_id: razorpayOrderId,
-                handler: async function (response: any) {
-                    try {
-                        const verified = await fetch(`http://localhost:5000/api/orders/${orderId}/pay`, {
-                            method: "PUT",
-                            headers: {
-                                "Content-Type": "application/json",
-                                Authorization: `Bearer ${token}`
-                            },
-                            body: JSON.stringify({
-                                razorpay_payment_id: response.razorpay_payment_id,
-                                razorpay_order_id: response.razorpay_order_id,
-                                razorpay_signature: response.razorpay_signature
-                            })
-                        });
-
-                        if (verified.ok) {
-                            alert("Payment Successful! Your order has been placed.");
-                            router.push("/");
-                            // We might also want to clear the cart in context/db but keeping it simple for now
-                            setTimeout(() => { window.location.reload() }, 1000);
-                        } else {
-                            alert("Payment verification failed. Please contact support.");
-                        }
-                    } catch (err) {
-                        alert("Error verifying payment.");
-                    }
-                },
-                prefill: {
-                    name: user?.name,
-                    email: user?.email,
-                },
-                theme: {
-                    color: "#2C2A29"
-                }
+            const newOrder = {
+                _id: Math.random().toString(36).substring(2, 10),
+                createdAt: new Date().toISOString(),
+                status: "Processing",
+                isDelivered: false,
+                isPaid: true,
+                totalPrice: cartTotal,
+                userId: user?._id || "",
+                userEmail: user?.email || "",
+                orderItems: items.map(i => ({
+                    _id: i.product._id,
+                    name: i.product.name,
+                    qty: i.quantity,
+                    price: i.product.price,
+                    image: i.product.image
+                })),
+                shippingAddress: address
             };
 
-            const rzp = new window.Razorpay(options);
-            rzp.on('payment.failed', function (response: any) {
-                alert(response.error.description);
-            });
-            rzp.open();
+            const existingOrders = JSON.parse(localStorage.getItem("perfume_orders") || "[]");
+            existingOrders.push(newOrder);
+            localStorage.setItem("perfume_orders", JSON.stringify(existingOrders));
+
+            alert("Payment Successful! Your order has been placed.");
+            localStorage.removeItem("perfume_cart");
+            router.push("/");
+            setTimeout(() => { window.location.reload() }, 500);
 
         } catch (error: any) {
             console.error(error);
-            alert(error.message);
+            alert("Failed to place order.");
         } finally {
             setPlacingOrder(false);
         }

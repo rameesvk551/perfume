@@ -23,27 +23,37 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
         setError("");
         setLoading(true);
 
-        const endpoint = isLogin ? "/api/users/login" : "/api/users/register";
-        const body = isLogin ? { email, password } : { name, email, password };
-
         try {
-            const res = await fetch(`http://localhost:5000${endpoint}`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(body),
-            });
-            const data = await res.json();
+            await new Promise((resolve) => setTimeout(resolve, 500));
+            let users = JSON.parse(localStorage.getItem("perfume_users") || "[]");
 
-            if (res.ok) {
-                login(data.token, {
-                    _id: data._id,
-                    name: data.name,
-                    email: data.email,
-                    role: data.role,
-                });
+            if (!isLogin) {
+                if (users.find((u: any) => u.email === email)) {
+                    setError("User already exists");
+                    setLoading(false);
+                    return;
+                }
+                const newUser = {
+                    _id: Math.random().toString(36).substring(2, 10),
+                    name,
+                    email,
+                    password,
+                    role: "user",
+                };
+                users.push(newUser);
+                localStorage.setItem("perfume_users", JSON.stringify(users));
+                login("mock_token_" + newUser._id, newUser);
                 onClose();
             } else {
-                setError(data.message || "Authentication failed");
+                const user = users.find(
+                    (u: any) => u.email === email && u.password === password
+                );
+                if (user) {
+                    login("mock_token_" + user._id, user);
+                    onClose();
+                } else {
+                    setError("Invalid email or password");
+                }
             }
         } catch (err) {
             setError("Something went wrong. Please try again.");

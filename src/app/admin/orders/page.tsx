@@ -28,15 +28,13 @@ export default function AdminOrdersPage() {
     const fetchOrders = async () => {
         if (!token) return;
         try {
-            const res = await fetch("http://localhost:5000/api/orders", {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            if (res.ok) {
-                const data = await res.json();
-                setOrders(data);
-            }
+            await new Promise((resolve) => setTimeout(resolve, 300));
+            const data = JSON.parse(localStorage.getItem("perfume_orders") || "[]");
+            // Sort by descending createdAt
+            data.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+            setOrders(data);
         } catch (error) {
-            console.error("Failed to fetch orders", error);
+            console.error("Failed to load orders", error);
         } finally {
             setLoading(false);
         }
@@ -49,21 +47,20 @@ export default function AdminOrdersPage() {
     const handleUpdateStatus = async (id: string, newStatus: string) => {
         if (!token) return;
         try {
-            const res = await fetch(`http://localhost:5000/api/orders/${id}/status`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`
-                },
-                body: JSON.stringify({ status: newStatus })
-            });
-            if (res.ok) {
+            await new Promise((resolve) => setTimeout(resolve, 300));
+            const allOrders = JSON.parse(localStorage.getItem("perfume_orders") || "[]");
+            const orderIndex = allOrders.findIndex((o: any) => o._id === id);
+            if (orderIndex > -1) {
+                allOrders[orderIndex].status = newStatus;
+                if (newStatus === "Delivered") allOrders[orderIndex].isDelivered = true;
+                localStorage.setItem("perfume_orders", JSON.stringify(allOrders));
                 fetchOrders(); // Refresh orders
             } else {
-                alert("Failed to update status");
+                alert("Order not found");
             }
         } catch (error) {
             console.error(error);
+            alert("Failed to update status");
         }
     };
 
