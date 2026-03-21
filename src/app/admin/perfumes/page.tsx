@@ -11,15 +11,18 @@ interface Perfume {
     name: string;
     brand: string;
     price: number;
-    description?: string;
+    description: string;
     collectionName?: string;
     collection?: string;
     longevity?: string;
-    gender?: string;
-    image?: string;
-    scentPyramid?: { top?: { name: string }[] };
+    gender: string;
+    image: string;
+    scentPyramid?: { top?: { name: string }[]; heart?: any[]; base?: any[] };
     rating?: number;
     year?: number;
+    story?: string;
+    occasion?: string[];
+    mood?: string[];
 }
 
 export default function AdminPerfumesPage() {

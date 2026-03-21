@@ -27,25 +27,8 @@ const sortOptions = [
 
 import { perfumes as localPerfumes } from "@/data/perfumes";
 
-interface Perfume {
-    _id?: string;
-    id?: string;
-    name: string;
-    brand: string;
-    price: number;
-    description: string;
-    collectionName?: string;
-    collection?: string;
-    occasion: string[];
-    gender: string;
-    image: string;
-    scentPyramid: { top: { name: string }[], heart: { name: string }[], base: { name: string }[] };
-    rating: number;
-    year: number;
-}
-
 export default function CollectionsPage() {
-    const [perfumes, setPerfumes] = useState<Perfume[]>([]);
+    const [perfumes, setPerfumes] = useState<(typeof localPerfumes[0] & { _id?: string, price: number, rating: number, year: number, image: string, brand: string })[]>([]);
     const [loading, setLoading] = useState(true);
 
     const [selectedGender, setSelectedGender] = useState<string | null>(null);
@@ -138,7 +121,7 @@ export default function CollectionsPage() {
         setTimeout(() => setAddedId(null), 2000);
     };
 
-    const getBadge = (perfume: Perfume) => {
+    const getBadge = (perfume: typeof localPerfumes[0] & { rating?: number; year?: number }) => {
         if (perfume.rating >= 4.8) return { label: "★ Best Seller", className: "badge-bestseller" };
         if (perfume.year >= 2024) return { label: "New", className: "badge-new" };
         return null;

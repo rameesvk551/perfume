@@ -7,14 +7,7 @@ import Image from "next/image";
 
 import { perfumes } from "@/data/perfumes";
 
-interface Perfume {
-    id: string;
-    name: string;
-    brand: string;
-    image: string;
-    description: string;
-    rating: number;
-}
+type Perfume = typeof perfumes[0] & { _id?: string; price?: number; rating?: number; year?: number };
 
 export function SignaturePerfumes() {
     const [featured, setFeatured] = useState<Perfume[]>([]);

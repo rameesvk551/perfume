@@ -12,20 +12,7 @@ import { useCart } from "@/context/CartContext";
 
 import { perfumes as localPerfumes } from "@/data/perfumes";
 
-interface Perfume {
-    id: string;
-    name: string;
-    brand: string;
-    price: number;
-    description: string;
-    collection: string;
-    mood: string[];
-    image: string;
-    scentPyramid: { top: { name: string }[], heart: { name: string }[], base: { name: string }[] };
-    rating: number;
-    year: number;
-    longevity: string;
-}
+type Perfume = typeof localPerfumes[0] & { _id?: string; rating?: number; year?: number };
 
 export default function PerfumeClient({ id }: { id: string }) {
     const [perfume, setPerfume] = useState<Perfume | null>(null);
