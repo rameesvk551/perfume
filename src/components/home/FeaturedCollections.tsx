@@ -89,8 +89,7 @@ export function FeaturedCollections() {
                     <div
                         ref={scrollRef}
                         onScroll={checkScroll}
-                        className="flex gap-6 md:gap-10 overflow-x-auto snap-x snap-mandatory pb-12 [&::-webkit-scrollbar]:hidden"
-                        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                        className="flex gap-6 md:gap-10 overflow-x-auto snap-x snap-mandatory pb-12 no-scrollbar"
                     >
                         {collections.map((collection, index) => (
                             <div
