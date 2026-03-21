@@ -12,9 +12,24 @@ import { useCart } from "@/context/CartContext";
 
 import { perfumes as localPerfumes } from "@/data/perfumes";
 
+interface Perfume {
+    id: string;
+    name: string;
+    brand: string;
+    price: number;
+    description: string;
+    collection: string;
+    mood: string[];
+    image: string;
+    scentPyramid: { top: { name: string }[], heart: { name: string }[], base: { name: string }[] };
+    rating: number;
+    year: number;
+    longevity: string;
+}
+
 export default function PerfumeClient({ id }: { id: string }) {
-    const [perfume, setPerfume] = useState<any>(null);
-    const [relatedPerfumes, setRelatedPerfumes] = useState<any[]>([]);
+    const [perfume, setPerfume] = useState<Perfume | null>(null);
+    const [relatedPerfumes, setRelatedPerfumes] = useState<Perfume[]>([]);
     const [loading, setLoading] = useState(true);
     const [showStickyBar, setShowStickyBar] = useState(false);
     const [descExpanded, setDescExpanded] = useState(false);
@@ -26,16 +41,16 @@ export default function PerfumeClient({ id }: { id: string }) {
         const fetchProduct = async () => {
             try {
                 await new Promise(resolve => setTimeout(resolve, 300));
-                const currentPerfume = localPerfumes.find((p: any) => p.id === id);
+                const currentPerfume = localPerfumes.find((p: Perfume) => p.id === id);
                 if (!currentPerfume) {
                     setLoading(false);
                     return;
                 }
                 setPerfume(currentPerfume);
                 const related = localPerfumes
-                    .filter((p: any) => p.id !== currentPerfume.id)
+                    .filter((p: Perfume) => p.id !== currentPerfume.id)
                     .filter(
-                        (p: any) =>
+                        (p: Perfume) =>
                             p.collection === currentPerfume.collection ||
                             p.mood.some((m: string) => currentPerfume.mood.includes(m))
                     )

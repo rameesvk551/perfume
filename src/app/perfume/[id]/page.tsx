@@ -2,7 +2,7 @@ import { perfumes as localPerfumes } from "@/data/perfumes";
 import PerfumeClient from "./PerfumeClient";
 
 export async function generateStaticParams() {
-    return localPerfumes.map((perfume: any) => ({
+    return localPerfumes.map((perfume: { id: string }) => ({
         id: perfume.id.toString(),
     }));
 }

@@ -1,7 +1,6 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { useAuth } from "./AuthContext";
 import { perfumes } from "@/data/perfumes";
 
 export interface CartItem {
@@ -49,7 +48,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     useEffect(() => {
         if (typeof window !== "undefined") {
             const saved = localStorage.getItem("perfume_cart");
-            if (saved) setItems(JSON.parse(saved));
+            if (saved) {
+                // eslint-disable-next-line react-hooks/set-state-in-effect
+                setItems(JSON.parse(saved));
+            }
         }
         setLoading(false);
     }, []);

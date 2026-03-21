@@ -242,7 +242,7 @@ export default function AdminDashboard() {
                     { label: "In Stock", value: "12", sub: "Products available" },
                     { label: "Low Stock", value: "3", sub: "Reorder soon" },
                     { label: "Out of Stock", value: "0", sub: "All products available" },
-                ].map((item, i) => (
+                ].map((item) => (
                     <div
                         key={item.label}
                         className="bg-white rounded-xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)]"

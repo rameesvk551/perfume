@@ -4,9 +4,17 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
 
+interface User {
+    _id: string;
+    name: string;
+    email: string;
+    role?: string;
+    createdAt: string;
+}
+
 export default function AdminCustomersPage() {
     const { token } = useAuth();
-    const [users, setUsers] = useState<any[]>([]);
+    const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {

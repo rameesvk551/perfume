@@ -3,12 +3,27 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { useAuth } from "@/context/AuthContext";
 import { perfumes as staticPerfumes } from "@/data/perfumes";
 
+interface Perfume {
+    _id?: string;
+    id?: string;
+    name: string;
+    brand: string;
+    price: number;
+    description?: string;
+    collectionName?: string;
+    collection?: string;
+    longevity?: string;
+    gender?: string;
+    image?: string;
+    scentPyramid?: { top?: { name: string }[] };
+    rating?: number;
+    year?: number;
+}
+
 export default function AdminPerfumesPage() {
-    const { token } = useAuth();
-    const [perfumes, setPerfumes] = useState<any[]>([]);
+    const [perfumes, setPerfumes] = useState<Perfume[]>([]);
     const [loading, setLoading] = useState(true);
 
     const [showForm, setShowForm] = useState(false);
@@ -42,9 +57,9 @@ export default function AdminPerfumesPage() {
         fetchPerfumes();
     }, []);
 
-    const handleEdit = (perfume: any) => {
-        setEditingId(perfume._id || perfume.id);
-        const topNotes = perfume.scentPyramid?.top?.map((n: any) => n.name).join(", ") || "";
+    const handleEdit = (perfume: Perfume) => {
+        setEditingId(perfume._id || perfume.id || null);
+        const topNotes = perfume.scentPyramid?.top?.map((n: {name: string}) => n.name).join(", ") || "";
         setFormData({
             name: perfume.name,
             brand: perfume.brand,
@@ -59,15 +74,16 @@ export default function AdminPerfumesPage() {
         setShowForm(true);
     };
 
-    const handleDelete = async (id: string) => {
+    const handleDelete = async (id?: string) => {
+        if (!id) return;
         if (!confirm("Are you sure you want to delete this perfume?")) return;
-        if (staticPerfumes.find((p: any) => p.id === id || p._id === id)) {
+        if (staticPerfumes.find((p: Perfume) => p.id === id || p._id === id)) {
             alert("Cannot delete static preset perfumes.");
             return;
         }
         try {
             const custom = JSON.parse(localStorage.getItem("perfume_custom_products") || "[]");
-            const updated = custom.filter((p: any) => p._id !== id && p.id !== id);
+            const updated = custom.filter((p: Perfume) => p._id !== id && p.id !== id);
             localStorage.setItem("perfume_custom_products", JSON.stringify(updated));
             fetchPerfumes();
         } catch (error) {
@@ -95,11 +111,11 @@ export default function AdminPerfumesPage() {
         try {
             const custom = JSON.parse(localStorage.getItem("perfume_custom_products") || "[]");
             if (editingId) {
-                if (staticPerfumes.find((p: any) => p.id === editingId || p._id === editingId)) {
+                if (staticPerfumes.find((p: Perfume) => p.id === editingId || p._id === editingId)) {
                     alert("Cannot edit static preset perfumes.");
                     return;
                 }
-                const index = custom.findIndex((p: any) => p._id === editingId || p.id === editingId);
+                const index = custom.findIndex((p: Perfume) => p._id === editingId || p.id === editingId);
                 if (index > -1) {
                     custom[index] = payload;
                 }

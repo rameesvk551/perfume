@@ -27,8 +27,25 @@ const sortOptions = [
 
 import { perfumes as localPerfumes } from "@/data/perfumes";
 
+interface Perfume {
+    _id?: string;
+    id?: string;
+    name: string;
+    brand: string;
+    price: number;
+    description: string;
+    collectionName?: string;
+    collection?: string;
+    occasion: string[];
+    gender: string;
+    image: string;
+    scentPyramid: { top: { name: string }[], heart: { name: string }[], base: { name: string }[] };
+    rating: number;
+    year: number;
+}
+
 export default function CollectionsPage() {
-    const [perfumes, setPerfumes] = useState<any[]>([]);
+    const [perfumes, setPerfumes] = useState<Perfume[]>([]);
     const [loading, setLoading] = useState(true);
 
     const [selectedGender, setSelectedGender] = useState<string | null>(null);
@@ -121,7 +138,7 @@ export default function CollectionsPage() {
         setTimeout(() => setAddedId(null), 2000);
     };
 
-    const getBadge = (perfume: any) => {
+    const getBadge = (perfume: Perfume) => {
         if (perfume.rating >= 4.8) return { label: "★ Best Seller", className: "badge-bestseller" };
         if (perfume.year >= 2024) return { label: "New", className: "badge-new" };
         return null;
@@ -472,7 +489,7 @@ export default function CollectionsPage() {
                                                             <div className="absolute bottom-0 left-0 right-0 p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] z-10 hidden md:block">
                                                                 <motion.button
                                                                     whileTap={{ scale: 0.96 }}
-                                                                    onClick={(e) => handleQuickAdd(e, perfume.id)}
+                                                                    onClick={(e) => handleQuickAdd(e, perfume.id!)}
                                                                     className="w-full py-3 text-[10px] tracking-[0.2em] uppercase font-sans glass-dark text-white hover:bg-charcoal transition-colors"
                                                                 >
                                                                     {addedId === perfume.id ? "✓ Added" : `Add to Bag — $${perfume.price}`}
@@ -506,7 +523,7 @@ export default function CollectionsPage() {
                                                     <div className="md:hidden mt-3 px-1">
                                                         <motion.button
                                                             whileTap={{ scale: 0.96 }}
-                                                            onClick={(e) => handleQuickAdd(e, perfume.id)}
+                                                            onClick={(e) => handleQuickAdd(e, perfume.id!)}
                                                             className="w-full py-3 text-[10px] tracking-[0.15em] uppercase font-sans border border-charcoal/20 text-charcoal hover:bg-charcoal hover:text-white transition-all duration-300"
                                                         >
                                                             {addedId === perfume.id ? "✓ Added" : "Add to Bag"}

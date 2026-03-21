@@ -7,8 +7,17 @@ import Image from "next/image";
 
 import { perfumes } from "@/data/perfumes";
 
+interface Perfume {
+    id: string;
+    name: string;
+    brand: string;
+    image: string;
+    description: string;
+    rating: number;
+}
+
 export function SignaturePerfumes() {
-    const [featured, setFeatured] = useState<any[]>([]);
+    const [featured, setFeatured] = useState<Perfume[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -16,7 +25,7 @@ export function SignaturePerfumes() {
             try {
                 // Simulate network request
                 await new Promise(resolve => setTimeout(resolve, 500));
-                setFeatured(perfumes.filter((p: any) => p.rating >= 4.8).slice(0, 4));
+                setFeatured(perfumes.filter((p: Perfume) => p.rating >= 4.8).slice(0, 4));
             } catch (error) {
                 console.error("Failed to fetch featured", error);
             } finally {

@@ -4,10 +4,31 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
 import { StorefrontShell } from "@/components/StoreLayout";
+import Image from "next/image";
+
+interface OrderItem {
+    _id: string;
+    name: string;
+    qty: number;
+    image: string;
+    price: number;
+}
+
+interface Order {
+    _id: string;
+    userId: string;
+    userEmail: string;
+    createdAt: string;
+    status: string;
+    isDelivered: boolean;
+    isPaid: boolean;
+    totalPrice: number;
+    orderItems: OrderItem[];
+}
 
 export default function ProfilePage() {
     const { user, token } = useAuth();
-    const [orders, setOrders] = useState<any[]>([]);
+    const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -20,10 +41,10 @@ export default function ProfilePage() {
                 );
                 const userId = token.replace("mock_token_", "");
                 const myOrders = allOrders.filter(
-                    (o: any) => o.userId === userId || o.userEmail === user?.email
+                    (o: Order) => o.userId === userId || o.userEmail === user?.email
                 );
                 // Sort by descending createdAt
-                myOrders.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+                myOrders.sort((a: Order, b: Order) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
                 setOrders(myOrders);
             } catch (error) {
                 console.error("Failed to fetch user orders", error);
@@ -104,7 +125,7 @@ export default function ProfilePage() {
                                     <p className="text-xs tracking-widest uppercase text-warm-gray animate-pulse py-8 text-center">Loading Orders...</p>
                                 ) : orders.length === 0 ? (
                                     <div className="text-center py-12 border border-dashed border-border rounded-lg">
-                                        <p className="text-charcoal/50 mb-4">You haven't placed any orders yet.</p>
+                                        <p className="text-charcoal/50 mb-4">You haven&apos;t placed any orders yet.</p>
                                         <a href="/collections" className="text-xs tracking-widest uppercase text-gold hover:text-charcoal transition-colors">
                                             Start Shopping
                                         </a>
@@ -126,11 +147,11 @@ export default function ProfilePage() {
                                                 </div>
 
                                                 <div className="space-y-4">
-                                                    {order.orderItems.map((item: any) => (
+                                                    {order.orderItems.map((item) => (
                                                         <div key={item._id} className="flex justify-between items-center">
                                                             <div className="flex items-center gap-4">
                                                                 <div className="w-12 h-16 bg-cream relative rounded overflow-hidden">
-                                                                    <img src={item.image} alt={item.name} className="object-cover w-full h-full" />
+                                                                    <Image src={item.image} alt={item.name} fill className="object-cover" sizes="48px" />
                                                                 </div>
                                                                 <div>
                                                                     <p className="text-sm text-charcoal font-medium">{item.name}</p>

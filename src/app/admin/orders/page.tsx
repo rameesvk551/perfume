@@ -1,8 +1,27 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
+
+interface OrderItem {
+    _id: string;
+    name: string;
+    qty: number;
+    price: number;
+    image: string;
+}
+
+interface Order {
+    _id: string;
+    user?: { name: string; email: string };
+    orderItems: OrderItem[];
+    totalPrice: number;
+    isPaid: boolean;
+    status: string;
+    isDelivered?: boolean;
+    createdAt: string;
+}
 
 const statusColor: Record<string, string> = {
     Pending: "bg-amber-50 text-amber-700 border-amber-100",
@@ -22,34 +41,34 @@ const statusDot: Record<string, string> = {
 
 export default function AdminOrdersPage() {
     const { token } = useAuth();
-    const [orders, setOrders] = useState<any[]>([]);
+    const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState(true);
 
-    const fetchOrders = async () => {
+    const fetchOrders = React.useCallback(async () => {
         if (!token) return;
         try {
             await new Promise((resolve) => setTimeout(resolve, 300));
             const data = JSON.parse(localStorage.getItem("perfume_orders") || "[]");
             // Sort by descending createdAt
-            data.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+            data.sort((a: Order, b: Order) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
             setOrders(data);
         } catch (error) {
             console.error("Failed to load orders", error);
         } finally {
             setLoading(false);
         }
-    };
+    }, [token]);
 
     useEffect(() => {
         fetchOrders();
-    }, [token]);
+    }, [fetchOrders]);
 
     const handleUpdateStatus = async (id: string, newStatus: string) => {
         if (!token) return;
         try {
             await new Promise((resolve) => setTimeout(resolve, 300));
             const allOrders = JSON.parse(localStorage.getItem("perfume_orders") || "[]");
-            const orderIndex = allOrders.findIndex((o: any) => o._id === id);
+            const orderIndex = allOrders.findIndex((o: Order) => o._id === id);
             if (orderIndex > -1) {
                 allOrders[orderIndex].status = newStatus;
                 if (newStatus === "Delivered") allOrders[orderIndex].isDelivered = true;

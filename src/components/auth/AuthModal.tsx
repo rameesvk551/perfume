@@ -25,10 +25,10 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
         try {
             await new Promise((resolve) => setTimeout(resolve, 500));
-            let users = JSON.parse(localStorage.getItem("perfume_users") || "[]");
+            const users = JSON.parse(localStorage.getItem("perfume_users") || "[]");
 
             if (!isLogin) {
-                if (users.find((u: any) => u.email === email)) {
+                if (users.find((u: { email: string }) => u.email === email)) {
                     setError("User already exists");
                     setLoading(false);
                     return;
@@ -46,7 +46,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
                 onClose();
             } else {
                 const user = users.find(
-                    (u: any) => u.email === email && u.password === password
+                    (u: { email: string; password: string }) => u.email === email && u.password === password
                 );
                 if (user) {
                     login("mock_token_" + user._id, user);
@@ -55,7 +55,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
                     setError("Invalid email or password");
                 }
             }
-        } catch (err) {
+        } catch {
             setError("Something went wrong. Please try again.");
         } finally {
             setLoading(false);

@@ -9,6 +9,7 @@ import Image from "next/image";
 
 declare global {
     interface Window {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         Razorpay: any;
     }
 }
@@ -100,7 +101,7 @@ export default function CheckoutPage() {
             router.push("/");
             setTimeout(() => { window.location.reload() }, 500);
 
-        } catch (error: any) {
+        } catch (error) {
             console.error(error);
             alert("Failed to place order.");
         } finally {
