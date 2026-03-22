@@ -17,7 +17,7 @@ interface Perfume {
     longevity?: string;
     gender: string;
     image: string;
-    scentPyramid?: { top?: { name: string }[]; heart?: any[]; base?: any[] };
+    scentPyramid?: { top?: { name: string }[]; heart?: { name: string }[]; base?: { name: string }[] };
     rating?: number;
     year?: number;
     story?: string;
